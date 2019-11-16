@@ -1,0 +1,80 @@
+/*PROBLEM
+Given a list of phone numbers, determine if it is consistent in the sense that no number is the prefix of another. Let’s say the phone catalogue listed these numbers:
+
+Emergency 911
+Alice 97 625 999
+Bob 91 12 54 26
+In this case, it’s not possible to call Bob, because the central would direct your call to the emergency line as soon as you had dialled the first three digits of Bob’s phone number. So this list would not be consistent.
+
+*/
+
+/******************SOLUTION****************/
+#include <bits/stdc++.h> 
+using namespace std; 
+const int ALPHABET_SIZE = 10; 
+
+struct TrieNode 
+{ 
+    struct TrieNode *children[ALPHABET_SIZE]; 
+    bool isEndOfWord; 
+}; 
+
+struct TrieNode *getNode(void) 
+{ 
+    struct TrieNode *pNode =  new TrieNode; 
+  
+    pNode->isEndOfWord = false; 
+  
+    for (int i = 0; i < ALPHABET_SIZE; i++) 
+        pNode->children[i] = NULL; 
+  
+    return pNode; 
+} 
+
+bool insert(struct TrieNode *root, string key,bool flag) 
+{ 
+    struct TrieNode *pCrawl = root; 
+  
+    for (int i = 0; i < key.length(); i++) 
+    { 
+        int index = key[i] - '0'; 
+        if (!pCrawl->children[index]) 
+            pCrawl->children[index] = getNode(); 
+  
+        pCrawl = pCrawl->children[index];
+		if(pCrawl->isEndOfWord)
+		flag=true; 
+    } 
+  
+    // mark last node as leaf 
+    pCrawl->isEndOfWord = true; 
+    return flag;
+}
+
+int main()
+{
+int t;
+cin>>t;
+
+while(t--)
+{
+	long n,i;
+	bool flag=false;
+	vector <string>v;
+	string s;
+	cin>>n;
+	struct TrieNode *root = getNode();
+	for(i=0;i<n;i++)
+	{
+		cin>>s;
+		v.push_back(s); 
+	}
+	sort(v.begin(),v.end());
+	for(i=0;i<v.size();i++)
+	flag=insert(root, v[i],flag);
+
+if(flag)
+cout<<"NO"<<endl;
+else
+cout<<"YES"<<endl;
+}}
